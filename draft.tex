@@ -9,6 +9,7 @@
 \documentclass{article}
 
 \usepackage{multicol}
+\usepackage{graphicx}
 
 \pagestyle{empty}
 \setlength{\topmargin}{ 0.25in}
@@ -36,18 +37,18 @@
 	\bibliographystyle{unsrt}
 		\begin{abstract}
 		The ability to estimate the query execution time is central for a number of tasks in database system
-		such as query scheduling, progress monitoring and costing during qury optimization. Recent work 
-		has explored the use of statstical techniques in place of the manually constructed cost models used 
+		such as query scheduling, progress monitoring and costing during query optimization. Recent work 
+		has explored the use of statistical techniques in place of the manually constructed cost models used 
 		in query optimization. Such techniques, which require as training data along with the 
 		actual execution time, promises superior accuracies for they being able to account the for factors 
-		such as hardware characterstics and bias in cardinality estimates. However, such techniques fail 
+		such as hardware characteristics and bias in cardinality estimates. However, such techniques fail 
 		to generalize i.e., produce poor estimates for queries that are not seen during the training.
 		
-		In this work, we propose and evaluate predictive modelling techniques that learn query 
-		execution behaviour at a fine grained operator level. For each operator, we consider diffrent sets 
-		of features and build diffrent models for them. Since there are only finitely many operators in 
+		In this work, we propose and evaluate predictive modeling techniques that learn query 
+		execution behavior at a fine grained operator level. For each operator, we consider different sets 
+		of features and build different models for them. Since there are only finitely many operators in 
 		database, this approach is practical and will be able to estimate any query as its a composition of
-		many operators. We evaluate our approches using TPC-H and TPC-DS workloads on PostgreSQL.
+		many operators. We evaluate our approaches using TPC-H and TPC-DS workloads on PostgreSQL.
 
 	\end{abstract}	
 	
@@ -55,7 +56,17 @@
 	
 	\begin{multicols}{2}
 	\section{INTRODUCTION}
-	Suspendisse fermentum, justo vitae suscipit convallis, nisl lorem commodo sem, ut ullamcorper neque mi in arcu. Quisque vitae tortor eget nisl faucibus tempus quis vel quam. Nullam quis facilisis sem. Mauris imperdiet nisl nec orci molestie ultricies. Maecenas tincidunt nisi sed tincidunt ultricies. Nunc malesuada ornare maximus. Nulla facilisi. Sed bibendum accumsan neque, quis pretium justo vestibulum at. Donec dapibus tortor nulla, et aliquam felis porta a. Sed suscipit quam massa, interdum accumsan eros tempus nec. Cras mattis, risus eu sagittis pretium, enim enim condimentum odio, in bibendum velit sem quis est. In euismod mi sit amet ante suscipit, ac suscipit nunc vulputate. Fusce at ipsum ac mauris lacinia fermentum.
+	Database systems can greatly benefit from accurate execution time predictions including: 
+	
+	\begin{itemize}
+	\item Query Optimizer: 
+	\item Query Scheduling:
+	\item Progress monitoring:
+	\end{itemize}
+	
+	1D regression using linear, polynomial and RBF kernels.
+	
+	\includegraphics[scale=.33]{figure_1.png} 
 		
 	\section{2nd SECTION TITLE}
 Pellentesque id leo eu massa rhoncus consectetur sit amet vel dui. Duis metus nibh, dignissim sit amet urna at, consequat semper libero. Fusce condimentum tortor mi, vel molestie sapien vehicula vitae. Integer ac ipsum sapien. Mauris lectus dolor, porta eget efficitur ac, varius a nulla. Fusce posuere dui ac nunc euismod, vitae convallis quam volutpat. Maecenas consequat malesuada porta. Nunc sit amet metus eget felis elementum porta. In eu vestibulum metus. Curabitur sed cursus purus.
