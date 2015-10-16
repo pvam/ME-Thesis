@@ -50,31 +50,53 @@
 		database, this approach is practical and will be able to estimate any query as its a composition of
 		many operators. We evaluate our approaches using TPC-H and TPC-DS workloads on PostgreSQL.
 
-	\end{abstract}	
-	
-	\hfill \\
-	
+	\end{abstract}		
+	\hfill 
 	\begin{multicols}{2}
 	\section{INTRODUCTION}
 	Database systems can greatly benefit from accurate execution time predictions including: 
-	
+	Explain the application briefly here.
 	\begin{itemize}
 	\item Query Optimizer: 
 	\item Query Scheduling:
 	\item Progress monitoring:
 	\end{itemize}
-	
-	1D regression using linear, polynomial and RBF kernels.
-	
-	\includegraphics[scale=.33]{figure_1.png} 
-		
-	\section{2nd SECTION TITLE}
-Pellentesque id leo eu massa rhoncus consectetur sit amet vel dui. Duis metus nibh, dignissim sit amet urna at, consequat semper libero. Fusce condimentum tortor mi, vel molestie sapien vehicula vitae. Integer ac ipsum sapien. Mauris lectus dolor, porta eget efficitur ac, varius a nulla. Fusce posuere dui ac nunc euismod, vitae convallis quam volutpat. Maecenas consequat malesuada porta. Nunc sit amet metus eget felis elementum porta. In eu vestibulum metus. Curabitur sed cursus purus.
-
+	If possible plot a non-linear SVR for the data. will the optimizer's cost 
+	itself is enough 1D regression using linear, polynomial and RBF kernels
+	\includegraphics[scale=.33]{optcost.png}  
+	\section{Overview}
+	Elaborate what is the plan level approach. give  a intro model
+	 based techniques. i.e.,  OFF LINE TRAINING, emphasize one time.
+	1. How to obtain training data (explain analyze)
+	2. getting execution times at plan nodes
+	3. Individual model training 
+	4. Explain while testing and predict using Model more in next section
 %%%%%%%%%%%%%  This can be followed by several other sections
-
+	\section{Model selection and Training}
+	What model is considered good ? choice of model and kernel
+	If possible prove linear systems are not sufficient.
+	Training data ,specification. Does more training data helps?
+	 training time etc.. 
+	Essentially all operators need to be covered. generation QGEN tool. 
+	\section{Preliminary Experiments}
+	Give a background about Static and dynamic workload.  
+	do experiments at 2 stages
+	1. Act vs Act
+	2. Est vs Est(Bias towards estimated cardinalities)
+	For each type of above scenario, do testing for tpc-h queries 
+	(tpc-ds in future)
+	At different scales to see the model's ability to predict.
+	For midterm you should be having result for 1 as well as 10 GB.
+	For each above dataset, 
+	Results should convey L1 (MRE) as well as queries that are within 
+	[0-0.5] [0.5-1] [1-1.5] 
 	\section{Conclusions and Future Work}
-	Proin id elit nec erat pellentesque gravida ut a lectus. Proin rhoncus eu justo et aliquet. Praesent auctor augue quis magna dapibus imperdiet. Fusce vehicula vehicula aliquet. Fusce ac dolor in lorem tristique bibendum eget finibus turpis. In odio dui, mattis sed commodo non, bibendum et augue. Nam dignissim id metus ut bibendum. Nulla eu leo sed dui venenatis viverra. Donec et enim rutrum lorem aliquam bibendum ac ac arcu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In gravida enim vitae nisi tincidunt pulvinar. Maecenas hendrerit lacinia dui, et egestas turpis suscipit sed. Vestibulum eros orci, bibendum in diam in, suscipit aliquet ipsum. Nulla facilisi. Vestibulum vulputate, nulla ut ornare varius, eros leo elementum sem, at tempor ante massa vitae dolor.	
+	Talk about generalization. 
+	operator specific features
+	capturing query interaction i.e., pipeline source of over-estimation
+	Optimizers provides sufficient information to detect a pipeline,
+	 can we use it to bind the operators and predict execution time 
+	 for a set of operators instead of a single operator.
 	
     \bibliographystyle{abbrv}
     \bibliography{}
