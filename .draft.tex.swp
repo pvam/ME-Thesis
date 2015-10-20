@@ -140,84 +140,44 @@ COMEBACK:	Write about predictive stuff .. to give more intro. lets skip to imp p
 	prediction models.
 
 	\section{Overview of Proposed Approach}
-	
-	To-Do : improvise diagrams with creately.com \\
 	\includegraphics[scale=0.3]{training.png}
-	\includegraphics[scale=0.3]{testing.png}
+TODO :  
+1. One more flowchart for Testing. 
+2. Describe the concept of multiple models for a single operator. [MSR]
+3. How do we select the best one among them. (Mention that current experiments dont use this idea, only one a simple non-linear model is used for all models with 2 features) 
 
-	In this section, we elaborate on the overview of the approach which consists of 2 phases. Like 
-	most other machine learning approaches, the first phase is an off-line training phase and the 
-	second is on-line testing phase.
-	During the training phase, we construct number of different 
-	models for each type of physical database operator(e.g.,  Sort-Merge Join, Nested Loop, Index Nested 		Loop,..). Each operator will be associated with so called 'Best-Fit' model which will be determined 
-	based on the Operator model selection described in section 3.1. This model will be invoked for the
-	purpose of estimating the execution time for a certain operator. Since there are only finite number of 	operators and only a couple of physical implementations for them, the space consumption is not 				excessive. 
-	\\
-	
-	During the testing phase, we actually run the query to get the true cardinality estimates. While this
-	seems to contradict the whole estimation problem, right now this is required because the focus is on
-	solving the modeling problem given the actual cardinalities. The more practical scenario i.e., where
-	we we only the know the estimated cardinalities, is a much harder problem as now the models also need 
-	to be Robust to the errors in cardinality estimates. This is the natural follow-up work to do. Once 
-	after the execution of the query, we need to extract features depending on the operator and invoke 
-	the Best Fit model (which is already computed during training phase) to get an estimate. We sum up 
-	costs for all the operator present in the plan tree to finally give an estimate of execution time. 	
-	
-	
-TO-DO :  
-2. Describe the concept of multiple models for a single operator.
-3. How do we select the best one among them. (Mention that current experiments don't use this idea, only one a simple non-linear model is used for all models with 2 features) 
 
+	Elaborate what is the plan level approach. give  a intro model
+	 based techniques. i.e.,  OFF LINE TRAINING, emphasize one time.
+	1. How to obtain training data (explain analyze)
+	2. getting execution times at plan nodes
+	3. Individual model training 
+	4. Explain while testing and predict using Model more in next section
+	
+	
+	
+	Mention assumptions, 
+	Pure in-memory.. lets solve this first.
+	For example, a sort merge
+
+
+join may require sorting its inputs. The sort operators are then responsible for
+handing over their result to the merge join via main memory. This means that
+the merge join may not require any I/O if the merge can be done purely in
+main memory
 
 Analytical approaches problems: 
 
-counting the numbers of pages read is not sufficient as the discrepancy between random and sequential I/O is tremendous.
+counting the numbers of pages read is not
+sufficient as the discrepancy between random and sequential I/O is tremendous.
 
 %%%%%%%%%%%%%  This can be followed by several other sections
-	\subsection{Model selection and Training}
-	Before we describe the need for multiple models for an operator, we shall present the motivation 
-	for doing so. While the statistical models can find the complex non-linear dependencies between 			features and the target, they cannot model the interaction among operators which might
-	affect the target value. 
-     
-	Consider the classic example of Sorting, where in the target variable (execution time) is 
-	proportional to $N_{l}$ log$N_{l}$. Unless this is used as a feature, the accuracy of the resulting 
-	model can be disappointing. Since we don't know the right function to be used, we explore the 
-	possible set of functions listed bellow and select the one with the minimum L2 error. We've used 			functions that are similar to the one's defined in \cite{robustIISc}
-	
-	TO-DO : Describe more about the L2 error in this context 
-	\begin{itemize}
-	\item Linear: $a_{0} N_{l} + a_{1} N_{r}$ 
-	\item Quadratic: $a_{0} N_{l}N_{r}$ , $a_{0} N_{l}N_{l}$ , $a_{0} N_{r}N_{r}$ \ldots
-	\item Logarithmic: $a_{0} N_{l} log(N_{r}) , a_{0} N_{r} log(N_{l}) $ .. 
-	\item Exponential: $a_{0} N_{l} ^ {N_{r}}$  	
-	\end{itemize}	
-	
-	TO-DO: Describe the queries and the procedure used to generate graphs.
-	We now show the observations for logarithmic and quadratic functions.
-	\includegraphics[scale=0.37]{Plots/quicksortnlogn.png}	
-	\includegraphics[scale=0.37]{Plots/quicksortnl2.png}	
-
-	Unsurprisingly, logarithmic function fits better than the quadratic. 
-	While in some cases (Such as QuickSort) the appropriate function is obvious from SQL
-	query processing, it does not hold for all operators. For example, consider Nested Loop Join which 
-	can be modeled with quadratic functions in general but when the inner relation has an index 
-	the same model produces estimates poor estimates which are 
-	"off" by orders of magnitude. In the following example,
-	we take an exploratory approach to determine the best function for the Index Nested Loop operator.
-	
-	\includegraphics[scale=0.37]{Plots/nil-nlnrlog2.png}	
-	\includegraphics[scale=0.37]{Plots/nil-nl+nr.png}	
-	\includegraphics[scale=0.37]{Plots/nil-nlnr.png}	
-	
-	
+	\section{Model selection and Training}
 	What model is considered good ? choice of model and kernel
 	If possible prove linear systems are not sufficient.
 	Training data ,specification. Does more training data helps?
 	 training time etc.. 
 	Essentially all operators need to be covered. generation QGEN tool. 
-	
-		
-	
 	\section{Preliminary Experiments}
 	
 	If possible plot a non-linear SVR for the data. will the optimizer's cost 
@@ -236,23 +196,6 @@ counting the numbers of pages read is not sufficient as the discrepancy between 
 	For each above dataset, 
 	Results should convey L1 (MRE) as well as queries that are within 
 	[0-0.5] [0.5-1] [1-1.5] 
-	
-%	Interpret tpc-h results by template wise, 
-%	To provide a sense of the magnitude of the estimation errors made
-%	by the optimizer, consider template-18, which is one of the templates 
-%	that exhibit the biggest error in operator-level prediction with
-%	actual/estimate model building. Instances of template-18 include 
-%	the following group by clause on table lineitem:
-%	group by l_orderkey having sum(l_quantity) > 314
-%	There are 15 million distinct l_orderkey values in lineitem
-%	(out of approximately 60 million tuples). The estimated number of
-%	groups satisfying sum(l_quantity) > 314 is 399521, whereas
-%	the actual number is 84. The PostgreSQL query optimizer com-
-%	putes this estimate using histograms (with 100 bins) for each col-
-%	umn based on the attribute independence assumption. The results
-%	are later fed into a Hash-Semi-Join, whose cost estimate is correspondingly
-%	very much off the mark.
-
 	\section{Conclusions and Future Work}
 	Talk about generalization. 
 	operator specific features
@@ -262,6 +205,13 @@ counting the numbers of pages read is not sufficient as the discrepancy between 
 	 for a set of operators instead of a single operator.
 	
 	\begin{thebibliography}{9}
+	\bibitem{opthet} 
+	Du, Weimin, Ravi Krishnamurthy, and Ming-Chien Shan. "Query optimization in a heterogeneous dbms." 		VLDB. Vol. 92. 1992.
+	\bibitem{activeSLA}
+	Xiong, Pengcheng, et al. "ActiveSLA: a profit-oriented admission control framework for database-as-a-		service providers." Proceedings of the 2nd ACM Symposium on Cloud Computing. ACM, 2011.	
+	\bibitem{progress}
+	Mishra, Chaitanya, and Nick Koudas. "The design of a query monitoring system." ACM Transactions on 		Database Systems (TODS) 34.1 (2009): 1.
+	
 	\bibitem{ganapathi} 
 	A. Ganapathi, H. A. Kuno, U. Dayal, J. L. Wiener, A. Fox, M. I. Jordan,
 	and D. A. Patterson. Predicting multiple metrics for queries: Better
@@ -276,9 +226,6 @@ counting the numbers of pages read is not sufficient as the discrepancy between 
      \bibitem{adaptive} 
      S. Guirguis, M. A. Sharaf, P. K. Chrysanthis, A. Labrinidis, and
 	K. Pruhs. Adaptive scheduling of web transactions. In ICDE, 2009.
-	
-	\bibitem{robustIISc}
-	Harish, D., Pooja N. Darera, and Jayant R. Haritsa. "Identifying robust plans through plan diagram 			reduction." Proceedings of the VLDB Endowment 1.1 (2008): 1124-1140.
 
 	\bibitem{TPCH}
 	TPC-H benchmark specification, http://www.tpc.org/tpch/
@@ -287,14 +234,7 @@ counting the numbers of pages read is not sufficient as the discrepancy between 
 	R. Othayoth and M. Poess, The making of tpc-ds, in VLDB
 	06: Proceedings of the 32nd international conference on Very
 	large data bases. VLDB Endowment, 2006, pp. 1049Ð1058
-	
-		\bibitem{opthet} 
-	Du, Weimin, Ravi Krishnamurthy, and Ming-Chien Shan. "Query optimization in a heterogeneous dbms." 		VLDB. Vol. 92. 1992.
-	\bibitem{activeSLA}
-	Xiong, Pengcheng, et al. "ActiveSLA: a profit-oriented admission control framework for database-as-a-		service providers." Proceedings of the 2nd ACM Symposium on Cloud Computing. ACM, 2011.	
-	\bibitem{progress}
-	Mishra, Chaitanya, and Nick Koudas. "The design of a query monitoring system." ACM Transactions on 		Database Systems (TODS) 34.1 (2009): 1.
-	
+
 	\end{thebibliography}
 	\end{multicols}
 \end{document}
