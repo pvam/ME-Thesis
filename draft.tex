@@ -10,6 +10,8 @@
 
 \usepackage{multicol}
 \usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{framed}
 
 \pagestyle{empty}
 \setlength{\topmargin}{ 0.25in}
@@ -174,17 +176,17 @@ Analytical approaches problems:
 counting the numbers of pages read is not sufficient as the discrepancy between random and sequential I/O is tremendous.
 
 %%%%%%%%%%%%%  This can be followed by several other sections
-	\subsection{Model selection and Training}
-	Before we describe the need for multiple models for an operator, we shall present the motivation 
+	\section{Training and Model selection}
+	Before we describe the concept of multiple models for an operator, we shall present the motivation 
 	for doing so. While the statistical models can find the complex non-linear dependencies between 			features and the target, they cannot model the interaction among operators which might
 	affect the target value. 
      
 	Consider the classic example of Sorting, where in the target variable (execution time) is 
 	proportional to $N_{l}$ log$N_{l}$. Unless this is used as a feature, the accuracy of the resulting 
-	model can be disappointing. Since we don't know the right function to be used, we explore the 
-	possible set of functions listed bellow and select the one with the minimum L2 error. We've used 			functions that are similar to the one's defined in \cite{robustIISc}
+	model can be disappointing. Since we don't know the right function to be used beforehand, 
+	we explore the possible set of functions listed bellow and select the one with the 
+	minimum estimation error. We've used functions that are similar to the one's defined in 					\cite{robustIISc}.
 	
-	TO-DO : Describe more about the L2 error in this context 
 	\begin{itemize}
 	\item Linear: $a_{0} N_{l} + a_{1} N_{r}$ 
 	\item Quadratic: $a_{0} N_{l}N_{r}$ , $a_{0} N_{l}N_{l}$ , $a_{0} N_{r}N_{r}$ \ldots
@@ -192,33 +194,88 @@ counting the numbers of pages read is not sufficient as the discrepancy between 
 	\item Exponential: $a_{0} N_{l} ^ {N_{r}}$  	
 	\end{itemize}	
 	
-	TO-DO: Describe the queries and the procedure used to generate graphs.
-	We now show the observations for logarithmic and quadratic functions.
-	\includegraphics[scale=0.37]{Plots/quicksortnlogn.png}	
-	\includegraphics[scale=0.37]{Plots/quicksortnl2.png}	
+	To illustrate the use of the functions in more details, we have plotted the curves with 
+	different possible functions for QuickSort as well as IndexNestedLoop operator. For the purpose
+	of generating curves for QuickSort we have used the following Query template 
+	
+	\begin{framed}
+	\begin{verbatim}
+	Select * from orders
+	where o_orderkey <= :varies 
+	order by o_totalprice
+	\end{verbatim}
+	\end{framed}
+	
+	%We now show the observations for logarithmic and quadratic functions.
+	\includegraphics[scale=0.38]{Plots/quicksortnlogn.png}	
+	\includegraphics[scale=0.35]{Plots/quicksortnl2.png}	
 
 	Unsurprisingly, logarithmic function fits better than the quadratic. 
 	While in some cases (Such as QuickSort) the appropriate function is obvious from SQL
-	query processing, it does not hold for all operators. For example, consider Nested Loop Join which 
+	query processing, it does not hold for all operators. 
+	For example, consider Nested Loop Join which 
 	can be modeled with quadratic functions in general but when the inner relation has an index 
-	the same model produces estimates poor estimates which are 
+	the same model produces estimates estimates which are 
 	"off" by orders of magnitude. In the following example,
 	we take an exploratory approach to determine the best function for the Index Nested Loop operator.
+	As in the case of QuickSort we have used the following query template to generate the required
+	data.
+	
+	\begin{framed}
+	\begin{verbatim}
+	select * from lineitem,orders
+	where l_orderkey = o_orderkey 
+		  and l_orderkey<= : varies;
+	\end{verbatim}
+	\end{framed}
+	
 	
 	\includegraphics[scale=0.37]{Plots/nil-nlnrlog2.png}	
 	\includegraphics[scale=0.37]{Plots/nil-nl+nr.png}	
 	\includegraphics[scale=0.37]{Plots/nil-nlnr.png}	
 	
-	
-	What model is considered good ? choice of model and kernel
-	If possible prove linear systems are not sufficient.
-	Training data ,specification. Does more training data helps?
-	 training time etc.. 
-	Essentially all operators need to be covered. generation QGEN tool. 
-	
-		
+	Out of the above 3 functions, $N_{l} log(N_{r})$ fits data better than other functions. 	
+	\subsection{Best Fit Model}	
+	Best fit model $M_{O}$ for an Operator $O$ is the model which has the minimum estimation errors 
+	for the set of training queries. The estimation error is computed as follows,
+	\\
+	Model Estimation Error = \sum\limits_{i=1}^n \dfrac{\left| Actual_{i} - Estimated_{i} \right|}{n}
 	
 	\section{Preliminary Experiments}
+	\subsection{Setup}
+	Our experimental study uses TPC-H decision support benchmark \cite{TPCH} on the top of 
+	PostgresSQL. The details are as follows, 
+
+	\begin{itemize}
+	\item Database Management System : PostgreSQL 9.4
+	\item Data sets and workload: We created 1GB TPC-H database
+	according to the specification. The primary key indices as indicated
+	in the TPC-H specification were created for both databases. We have excluded Query 1,21  
+	To keep the training time under control, and Queries 15 as it creates a view which is not yet
+	supported in our work. This resulted in 19 out of 22 TPC-H queries being used for training. We've 
+	used TPC-H Qgen tool to generate 10 instances of each of the 19 queries, resulting in a total of 190 
+	queries.
+	
+	\item Hardware: The queries were executed on a machine
+	with 8GB RAM running Ubuntu. buffer pool size was set to 1GB (25\% of the total RAM as the rule
+	of thumb). All queries were executed sequentially with cold start
+	(i.e., OS buffers flushed before the start of each query).
+	
+	\item Statistical Models: As of now, we have limited our experiments to 2-features 
+	
+	
+	TODO : Finish tomo. Talk with sir once.
+	
+	TODO : 
+	0 . Optimzer vs Actual. 
+	1. Histogram of TPC-H errors.
+	2. table with distribution of MRE.
+	3. Performance operator wise. Box plot
+	4. Insights : which operators are hard to predict
+	
+	\end{itemize}		
+	
+	\subsection{Prediction with Optimizer cost models}	
 	
 	If possible plot a non-linear SVR for the data. will the optimizer's cost 
 	itself is enough 1D regression using linear, polynomial and RBF kernels
