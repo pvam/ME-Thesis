@@ -42,15 +42,12 @@
 	such as query scheduling, progress monitoring and costing during query optimization. Recent work 
 	has explored the use of statistical techniques in place of the manually constructed cost models used 
 	in query optimization. Such techniques, which require as training data along with the 
-	actual execution time, promises superior accuracies for they being able to account the for factors 
+	actual execution time, promises superior accuracies for they being able to account for the factors 
 	such as hardware characteristics and bias in cardinality estimates. However, such techniques fail 
 	to generalize i.e., produce poor estimates for queries that are not seen during the training.
 	
 	In this work, we propose and evaluate predictive modeling techniques that learn query 
-	execution behavior at a fine grained operator level. For each operator, we consider different sets 
-	of features and build different models for them. Since there are only finitely many operators in 
-	database, this approach is practical and will be able to estimate any query as its a composition of
-	many operators. We evaluate our approaches using TPC-H workload on PostgreSQL.
+	execution behavior at a fine grained operator level. For each \textit{physical implementation} of an 			operator, we consider different sets of features and build multiple models for them. Out of all those 		models, only the model that fits best is used later for prediciton.Since there are only finitely many 		operators in database, this approach is practical and will be able to estimate any query as its a 			composition of many operators. We evaluate our approaches using TPC-H workload on PostgreSQL.
 
 	\end{abstract}		
 	\hfill 
@@ -70,11 +67,8 @@
 	models often fail to capture several factors that affect the actual
 	resource consumption. For example, they may not include detailed
 	modeling of all of the various improvements made to database query
-	processing – such as nested loop optimizations \cite{ganapathi, adaptive} which localize
-	references in the inner subtree, and introduce “partially blocking”
-	batch sorts on the outer side, thereby increasing the memory
-	requirements and CPU time and reducing I/O compared to the traditional
-	iterator model. Similarly, they may not accurately reflect
+	processing – such as nested loop optimizations \cite{nestedloops}. 
+	Similarly, they may not accurately reflect
 	specific hardware characteristics of the current production system
 	or the impact of cardinality estimation errors. Analytical cost models predominantly 
 	used by the current generation of query optimizers cannot
@@ -91,7 +85,7 @@
 	Linear Regression, Least Squares and Support Vector Machines.
 	Training a model involves using historical data sets to determine the
 	best model instance that explains the available data. For example,
-	fitting a function to a time series may yield a specific polynomial
+	fitting a function to a dataset may yield a specific linear/polynomial
 	instance that can be used to predict future values.
 	Model training (or building) requires selecting (a) the feature at-
 	tributes, a subset of all attributes in the data set, and (b) a predic
@@ -100,15 +94,16 @@
 	which model type and feature set will produce the most accurate
 	model for a given data set without building and testing multiple
 	models. In some cases, a domain expert can manually specify the
-	feature attributes. Alternatively, feature attributes can be learned
-	automatically; however, given a set of n attributes, trying the power
-	set is prohibitively expensive if n is not small or training is expensive 
-	thereby requiring heuristic solutions.
-	Most approaches rank the candidate attributes (often based on their
-	correlation to the prediction attribute using metrics such as information 
-	gain or correlation coefficients) and use this ranking to guide
-	a heuristic search \cite{datamining} to identify most predictive attributes tested
-	over a disjoint test data set. 
+	feature attributes. 
+%	Alternatively, feature attributes can be learned
+%	automatically; however, given a set of n attributes, trying the power
+%	set is prohibitively expensive if n is not small or training is expensive 
+%	thereby requiring heuristic solutions.
+%	Most approaches rank the candidate attributes (often based on their
+%	correlation to the prediction attribute using metrics such as information 
+%	gain or correlation coefficients) and use this ranking to guide
+%	a heuristic search \cite{datamining} to identify most predictive attributes tested
+%	over a disjoint test data set. 
 %	In this paper, we will use a similar For-
 %	ward Feature Selection algorithm based on linear correlation coef-
 %	ficients [4]. This algorithm essentially performs a best-first search
@@ -125,7 +120,9 @@ knowledge of SQL Query processing. For the purpose of determining the best fit c
 techniques for determining predictive accuracy \cite{forecasting}. As mentioned, 
 it is not possible to estimate a priori what model would be
 most predictive for a given data set without training/testing it. In this work, we are using
-disjoint training and testing datasets that are generated from qgen tool of TPC-H workload 		\cite{TPCH}. The mean relative error is used to estimate the accuracy of our prediction models.
+disjoint training and testing datasets that are generated from qgen tool of TPC-H workload 		\cite{TPCH}. Mean relative error(MRE) is used to estimate the accuracy of our prediction models.
+
+Throughout the discussion of this work, we discriminate operator by its implementation method i.e., For example, implementations of Aggregate operator Group Aggregate, Hash Aggregate and Unique are all treated as different operators.
 
 	\section{Overview of Proposed Approach}
 %	\begin{figure*}[h]
@@ -134,15 +131,13 @@ disjoint training and testing datasets that are generated from qgen tool of TPC-
 %	\end{figure*}
 	
 	\includegraphics[scale=0.4]{training.png}
-	
 
 	In this section, we elaborate on the overview of the approach which consists of 2 phases. Like 
 	most other machine learning approaches, the first phase is an off-line training phase and the 
 	second is on-line testing phase.
 	During the training phase, we construct number of different 
-	models for each type of physical database operator(e.g.,  Sort-Merge Join, Nested Loop, Index Nested 		Loop,..). Each operator will be associated with so called 'Best-Fit' model which will be determined 
-	based on the Operator model selection described in section 3.1. This model will be invoked for the
-	purpose of estimating the execution time for a certain operator. Since there are only finite number of 	operators and only a couple of physical implementations for them, the space consumption is not 				excessive. 
+	models for each type of database operator. Each operator will be associated with so called 'Best-Fit' 		model which will be determined 
+	based on the model selection described in next section. Later, while in testing, only this model will 		be invoked for the purpose of estimating the execution time of an operator. Since there are 			only finite number of operators and only a couple of physical implementations for them, the space 			consumption is not excessive. 
 
 \hfill
 	
@@ -154,16 +149,7 @@ disjoint training and testing datasets that are generated from qgen tool of TPC-
 	after the execution of the query, we need to extract features depending on the operator and invoke 
 	the Best Fit model (which is already computed during training phase) to get an estimate. We sum up 
 	costs for all the operator present in the plan tree to finally give an estimate of execution time. 	
-	
-	
-TO-DO :  
-2. Describe the concept of multiple models for a single operator.
-3. How do we select the best one among them. (Mention that current experiments don't use this idea, only one a simple non-linear model is used for all models with 2 features) 
 
-
-Analytical approaches problems: 
-
-counting the numbers of pages read is not sufficient as the discrepancy between random and sequential I/O is tremendous.
 
 %%%%%%%%%%%%%  This can be followed by several other sections
 	\section{Training and Model selection}
@@ -359,7 +345,8 @@ counting the numbers of pages read is not sufficient as the discrepancy between 
 	at plan level. They use statistical models such as SVM and Linear regression to learn the behavior of 
 	every operator. They have shown by that learning at this level, the model can now recognize queries 		which can differ largely from the queries seen during training. They have only considered 14 out of 		22 templates and claimed that they were able to obtain 41\% i.e., an MRE of 0.41. We are different 			from their approach in 2 ways a) we consider learning at \textit{implementation level} i.e, for the operator \textit{sort}, to implement it optimizer has a choice among multiple sorting methods such as quick sort ,merge sort top-N heapsort and external sort etc. No previous approach distinguishes the implementation methods of an operator which is clearly incorrect because there's a substantial difference between resource consumptions of quick-sort and external sort as the former is CPU intensive (consumes relatively less time) and while the latter is IO intensive (consumes much more time). b) we consider multiple learning models for every implementation and select the one which fits the best. This approach is often used when the relation between features and target is unclear. 
 	
-	In \cite{analytical}, author's have done an analytical cost modeling where in they compute CPU and IO time individually by obtaining the number of operations performed and number of pages(sequential \& random) accessed respectively. They have also proposed a calibration phase where the cost model can account for the hardware changes which is absent in default Postgres model.  In previous unpublished work by Phankuri, they have devised methods to compute random page cost which was left out in the work\cite{analytical}. While this kind of approach seems natural, there's inherent ambiguity in knowing the number of pages accessed.  Even after knowing all this, there's no certain way we can compute IO time as cost model can never know whether a page is sequentially accessed or randomly accessed which impacts final cost computed heavily as there is a magnitude of difference in access times of sequential and random pages.
+	In \cite{analytical}, author's have done an analytical cost modeling where in they compute CPU and IO time individually by obtaining the number of operations performed and number of pages(sequential \& random) accessed respectively. They have also proposed a calibration phase where the cost model can account for the hardware changes which is absent in default Postgres model.  In previous unpublished work by Phankuri, methods are provided to compute cost for reading random which was ambiguous the work\cite{analytical}. While this kind of approach seems natural, counting the numbers of pages read is not sufficient as the discrepancy between random and sequential I/O is tremendous. Unfortunately optimizer can never know whether a page is sequentially accessed or randomly accessed.
+	
 	Finally, there has also been work on query progress indicators \cite{progress}. Query progress indicators provide estimations for the comple-
 	tion degrees of running queries. Such studies assume that the work
 	done by individual query operators are transparent, i.e., externally
@@ -413,6 +400,9 @@ counting the numbers of pages read is not sufficient as the discrepancy between 
 	
 	\bibitem{forecasting}
 	Makridakis, Spyros, Steven C. Wheelwright, and Rob J. Hyndman. Forecasting methods and applications. John Wiley, 2008.
+	
+	\bibitem{nestedloops}
+	DeWitt, David J., Jeffrey F. Naughton, and Joseph Burger. "Nested loops revisited." Parallel and Distributed Information Systems, 1993., Proceedings of the Second International Conference on. IEEE, 1993.
 	
 	\bibitem{TPCH}
 	TPC-H benchmark specification, http://www.tpc.org/tpch/

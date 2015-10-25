@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.9.25)  25 OCT 2015 18:20
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.7.5)  25 OCT 2015 19:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **draft.tex
 (./draft.tex
 LaTeX2e <2011/06/27>
-Babel <3.9h> and hyphenation patterns for 2 languages loaded.
+Babel <3.9h> and hyphenation patterns for 4 languages loaded.
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
 (/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
@@ -84,8 +84,8 @@ Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
 Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 )
-(/etc/texmf/tex/latex/config/graphics.cfg
-File: graphics.cfg 2009/08/28 v1.8 graphics configuration of TeX Live
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/graphics.cfg
+File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
 )
 Package graphics Info: Driver file: pdftex.def on input line 91.
 
@@ -196,9 +196,57 @@ LaTeX Font Info:    ... okay on input line 31.
 \MPnumerator=\count113
 \makeMPintoPDFobject=\count114
 \everyMPtoPDFconversion=\toks21
+) (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
 )
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in PDF mode is detected.
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
+
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
+))
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+Package grfext Info: Graphics extension search list:
+(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 452.
+
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 62.
- (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
@@ -219,7 +267,7 @@ LaTeX Warning: Citation `datamining' on page 1 undefined on input line 110.
 [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-<training.png, id=12, 638.385pt x 459.7175pt>
+<training.png, id=13, 638.385pt x 459.7175pt>
 File: training.png Graphic file (type png)
  <use training.png>
 Package pdftex.def Info: training.png used on input line 136.
@@ -230,14 +278,14 @@ Overfull \hbox (21.63136pt too wide) in paragraph at lines 136--137
  []
 
 [2 <./training.png>]
-<Plots/quicksortnlogn.png, id=17, 586.8324pt x 442.2924pt>
+<Plots/quicksortnlogn.png, id=18, 586.8324pt x 442.2924pt>
 File: Plots/quicksortnlogn.png Graphic file (type png)
 
 <use Plots/quicksortnlogn.png>
 Package pdftex.def Info: Plots/quicksortnlogn.png used on input line 200.
 (pdftex.def)             Requested size: 222.99863pt x 168.07286pt.
 
-<Plots/quicksortnl2.png, id=19, 586.8324pt x 442.2924pt>
+<Plots/quicksortnl2.png, id=20, 586.8324pt x 442.2924pt>
 File: Plots/quicksortnl2.png Graphic file (type png)
 
 <use Plots/quicksortnl2.png>
@@ -248,20 +296,20 @@ Overfull \hbox (1.28052pt too wide) in paragraph at lines 200--202
 [][]
  []
 
-<Plots/nil-nlnrlog2.png, id=20, 586.8324pt x 442.2924pt>
+<Plots/nil-nlnrlog2.png, id=21, 586.8324pt x 442.2924pt>
 File: Plots/nil-nlnrlog2.png Graphic file (type png)
 
 <use Plots/nil-nlnrlog2.png>
 Package pdftex.def Info: Plots/nil-nlnrlog2.png used on input line 223.
 (pdftex.def)             Requested size: 217.12459pt x 163.64561pt.
 
-<Plots/nil-nl+nr.png, id=21, 586.8324pt x 442.2924pt>
+<Plots/nil-nl+nr.png, id=22, 586.8324pt x 442.2924pt>
 File: Plots/nil-nl+nr.png Graphic file (type png)
 
 <use Plots/nil-nl+nr.png>
 Package pdftex.def Info: Plots/nil-nl+nr.png used on input line 224.
 (pdftex.def)             Requested size: 217.12459pt x 163.64561pt.
- <Plots/nil-nlnr.png, id=22, 586.8324pt x 442.2924pt>
+ <Plots/nil-nlnr.png, id=23, 586.8324pt x 442.2924pt>
 File: Plots/nil-nlnr.png Graphic file (type png)
 
 <use Plots/nil-nlnr.png>
@@ -278,7 +326,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 223--226
  []
 
 [3 <./Plots/quicksortnlogn.png> <./Plots/quicksortnl2.png>]
-<optcost.png, id=33, 586.8324pt x 442.2924pt>
+<optcost.png, id=34, 586.8324pt x 442.2924pt>
 File: optcost.png Graphic file (type png)
  <use optcost.png>
 Package pdftex.def Info: optcost.png used on input line 269.
@@ -289,7 +337,7 @@ Overfull \hbox (30.35402pt too wide) in paragraph at lines 265--270
  []
 
 [4 <./Plots/nil-nlnrlog2.png> <./Plots/nil-nl+nr.png> <./Plots/nil-nlnr.png>]
-<tpch-1gbres.png, id=41, 1544.77126pt x 900.36375pt>
+<tpch-1gbres.png, id=42, 1544.77126pt x 900.36375pt>
 File: tpch-1gbres.png Graphic file (type png)
  <use tpch-1gbres.png>
 Package pdftex.def Info: tpch-1gbres.png used on input line 331.
@@ -313,13 +361,13 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 1961 strings out of 495032
- 24813 string characters out of 6181718
- 101814 words of memory out of 5000000
- 5170 multiletter control sequences out of 15000+600000
+ 2320 strings out of 494985
+ 31362 string characters out of 6180357
+ 110442 words of memory out of 5000000
+ 5505 multiletter control sequences out of 15000+600000
  10144 words of font info for 37 fonts, out of 8000000 for 9000
- 14 hyphenation exceptions out of 8191
- 27i,6n,21p,1122b,331s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36 hyphenation exceptions out of 8191
+ 38i,6n,23p,1122b,334s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texli
@@ -333,9 +381,10 @@ s/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
 9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/
 share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on build/draft.pdf (7 pages, 471997 bytes).
+Output written on build/draft.pdf (7 pages, 461253 bytes).
 PDF statistics:
- 98 PDF objects out of 1000 (max. 8388607)
+ 100 PDF objects out of 1000 (max. 8388607)
+ 61 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  41 words of extra memory for PDF output out of 10000 (max. 10000000)
 
