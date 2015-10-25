@@ -50,7 +50,7 @@
 	execution behavior at a fine grained operator level. For each operator, we consider different sets 
 	of features and build different models for them. Since there are only finitely many operators in 
 	database, this approach is practical and will be able to estimate any query as its a composition of
-	many operators. We evaluate our approaches using TPC-H and TPC-DS workloads on PostgreSQL.
+	many operators. We evaluate our approaches using TPC-H workload on PostgreSQL.
 
 	\end{abstract}		
 	\hfill 
@@ -86,66 +86,55 @@
 	
 	In this work, we utilize learning based models and prediction techniques which are promising reasonable accuracies in recent work \cite{ganapathi,MSR,ICDE2012}
 	
-	\section{Background:Model Based Prediction}	
-COMEBACK:	Write about predictive stuff .. to give more intro. lets skip to imp parts now.
-
-\hfill\\
-
+	\section{Background : Model Based Prediction}	
 	We use the term model to refer to any predictive function such as
-	Multiple Regression, Bayesian Nets, and Support Vector Machines.
+	Linear Regression, Least Squares and Support Vector Machines.
 	Training a model involves using historical data sets to determine the
 	best model instance that explains the available data. For example,
 	fitting a function to a time series may yield a specific polynomial
 	instance that can be used to predict future values.
-	Model training (or building) requires selecting (i) the feature at-
-	tributes, a subset of all attributes in the data set, and (ii) a predic-
+	Model training (or building) requires selecting (a) the feature at-
+	tributes, a subset of all attributes in the data set, and (b) a predic
 	tion model, e.g., Linear Regression and Support Vector Machines
-	(SVMs), to be used for modeling. In general, we cannot know
+	(SVMs), to be used for modeling. In general, we \textit{cannot} know
 	which model type and feature set will produce the most accurate
 	model for a given data set without building and testing multiple
 	models. In some cases, a domain expert can manually specify the
-	feature attributes. In other cases, this step is trivial as the prediction
-	attribute(s) directly determine the feature attribute(s), e.g., in auto-
-	regressive models. Alternatively, feature attributes can be learned
+	feature attributes. Alternatively, feature attributes can be learned
 	automatically; however, given a set of n attributes, trying the power
-	set is prohibitively expensive if n is not small or training is expen-
-	sive [4, 3, 2] thereby requiring heuristic solutions.
+	set is prohibitively expensive if n is not small or training is expensive 
+	thereby requiring heuristic solutions.
 	Most approaches rank the candidate attributes (often based on their
-	correlation to the prediction attribute using metrics such as infor-
-	mation gain or correlation coefficients) and use this ranking to guide
-	
-	a heuristic search [4] to identify most predictive attributes tested
-	over a disjoint test data set. In this paper, we will use a similar For-
-	ward Feature Selection algorithm based on linear correlation coef-
-	ficients [4]. This algorithm essentially performs a best-first search
-	in the model space. It starts with building models using small num-
-	ber of features and iteratively builds more complex and accurate
-	models by using more features. The features are considered with
-	respect to their correlation with the target/prediction attribute. The
-	training data set may be sampled to speed up the process.
-	While we use a feature selection algorithm for building accurate
-	models using relevant features, we do not consider building multi-
-	ple models of different types for solving the model selection prob-
-	lem. Instead in each one of our experiments we use a single type of
-	prediction model, either Linear Regression or SVMs, that performs
-	well.
-	Hypothesis testing and confidence interval estimations are two com-
-	mon techniques for determining predictive accuracy [2]. As men-
-	tioned, it is not possible to estimate a priori what model would be
-	most predictive for a given data set without training/testing it. One
-	form of hypothesis testing that is commonly used is K-Fold Cross
-	Validation (K-CV). K-CV divides the observed data up into k non-
-	overlapping partitions. One of the partitions is used as validation
-	data while the other k − 1 partitions are used to train the model
-	and to predict the data in the validation interval. In this study, we
-	will use cross-validation techniques to estimate the accuracy of our
-	prediction models.
+	correlation to the prediction attribute using metrics such as information 
+	gain or correlation coefficients) and use this ranking to guide
+	a heuristic search \cite{datamining} to identify most predictive attributes tested
+	over a disjoint test data set. 
+%	In this paper, we will use a similar For-
+%	ward Feature Selection algorithm based on linear correlation coef-
+%	ficients [4]. This algorithm essentially performs a best-first search
+%	in the model space. It starts with building models using small num-
+%	ber of features and iteratively builds more complex and accurate
+%	models by using more features. The features are considered with
+%	respect to their correlation with the target/prediction attribute. The
+%	training data set may be sampled to speed up the process.
+
+	In this work we currently don't use any feature selection algorithm but rather rely on domain 
+knowledge of SQL Query processing. For the purpose of determining the best fit curve for the given set of features we consider building multiple models of different types. In each one of the models we use a single type of prediction model, either Linear Regression or SVMs, that performs well.
+
+	Hypothesis testing and confidence interval estimations are two common
+techniques for determining predictive accuracy \cite{forecasting}. As mentioned, 
+it is not possible to estimate a priori what model would be
+most predictive for a given data set without training/testing it. In this work, we are using
+disjoint training and testing datasets that are generated from qgen tool of TPC-H workload 		\cite{TPCH}. The mean relative error is used to estimate the accuracy of our prediction models.
 
 	\section{Overview of Proposed Approach}
+%	\begin{figure*}[h]
+%	  \includegraphics[width=\textwidth]{training.png}
+%	  \caption{Operator level approach to Execution time prediction}
+%	\end{figure*}
 	
-	To-Do : improvise diagrams with creately.com \\
-	\includegraphics[scale=0.3]{training.png}
-	\includegraphics[scale=0.3]{testing.png}
+	\includegraphics[scale=0.4]{training.png}
+	
 
 	In this section, we elaborate on the overview of the approach which consists of 2 phases. Like 
 	most other machine learning approaches, the first phase is an off-line training phase and the 
@@ -154,7 +143,8 @@ COMEBACK:	Write about predictive stuff .. to give more intro. lets skip to imp p
 	models for each type of physical database operator(e.g.,  Sort-Merge Join, Nested Loop, Index Nested 		Loop,..). Each operator will be associated with so called 'Best-Fit' model which will be determined 
 	based on the Operator model selection described in section 3.1. This model will be invoked for the
 	purpose of estimating the execution time for a certain operator. Since there are only finite number of 	operators and only a couple of physical implementations for them, the space consumption is not 				excessive. 
-	\\
+
+\hfill
 	
 	During the testing phase, we actually run the query to get the true cardinality estimates. While this
 	seems to contradict the whole estimation problem, right now this is required because the focus is on
@@ -238,8 +228,10 @@ counting the numbers of pages read is not sufficient as the discrepancy between 
 	\subsection{Best Fit Model}	
 	Best fit model $M_{O}$ for an Operator $O$ is the model which has the minimum estimation errors 
 	for the set of training queries. The estimation error is computed as follows,
-	\\
-	Model Estimation Error = \sum\limits_{i=1}^n \dfrac{\left| Actual_{i} - Estimated_{i} \right|}{n}
+	
+	\begin{center}
+	$\dfrac{1}{n} \sum\limits_{i=1}^n \left| Actual_{i} - Estimated_{i} \right|$
+	\end{center}
 	
 	\section{Preliminary Experiments}
 	\subsection{Setup}
@@ -253,7 +245,7 @@ counting the numbers of pages read is not sufficient as the discrepancy between 
 	in the TPC-H specification were created for both databases. We have excluded Query 1,21  
 	To keep the training time under control, and Queries 15 as it creates a view which is not yet
 	supported in our work. This resulted in 19 out of 22 TPC-H queries being used for training. We've 
-	used TPC-H Qgen tool to generate 10 instances of each of the 19 queries, resulting in a total of 190 
+	used TPC-H qgen tool to generate 10 instances of each of the 19 queries, resulting in a total of 190 
 	queries.
 	
 	\item Hardware: The queries were executed on a machine
@@ -261,13 +253,9 @@ counting the numbers of pages read is not sufficient as the discrepancy between 
 	of thumb). All queries were executed sequentially with cold start
 	(i.e., OS buffers flushed before the start of each query).
 	
-	\item Statistical Models: As of now, we have limited our experiments to 2-features 
-	
-	
-	TODO : Finish tomo. Talk with sir once.
+	\item Statistical Models: As of now, we have limited our experiments to at-most 2 features (Input 			cardinalities $N_{l} , N_{r}$). For evaluating the best-fit model we have used linear regression 			models (available from python's sckit-learn \cite{sckit})
 	
 	TODO : 
-	0 . Optimzer vs Actual. 
 	1. Histogram of TPC-H errors.
 	2. table with distribution of MRE.
 	3. Performance operator wise. Box plot
@@ -275,48 +263,96 @@ counting the numbers of pages read is not sufficient as the discrepancy between 
 	
 	\end{itemize}		
 	
-	\subsection{Prediction with Optimizer cost models}	
+	\subsection{Prediction with Optimizer cost models}		
+	We start with the results showing that Optimizer's estimates are a poor indication of the real
+	execution time. For this purpose, we have taken 19 of 22 queries (To make a fair comparison with 
+	our approach we've excluded the 3 templates for the reason stated earlier). The actual execution time
+	and prediction times are computed using \textit{Explain Analyze} command of Postgres. The values 			collected are averaged over 5 runs.
+	\includegraphics[scale=0.45]{optcost.png}
 	
-	If possible plot a non-linear SVR for the data. will the optimizer's cost 
-	itself is enough 1D regression using linear, polynomial and RBF kernels
-	\includegraphics[scale=.33]{optcost.png}  
-	
-	
-	Give a background about Static and dynamic workload.  
-	do experiments at 2 stages
-	1. Act vs Act
-	2. Est vs Est(Bias towards estimated cardinalities)
-	For each type of above scenario, do testing for tpc-h queries 
-	(tpc-ds in future)
-	At different scales to see the model's ability to predict.
-	For midterm you should be having result for 1 as well as 10 GB.
-	For each above dataset, 
-	Results should convey L1 (MRE) as well as queries that are within 
-	[0-0.5] [0.5-1] [1-1.5] 
-	
-%	Interpret tpc-h results by template wise, 
-%	To provide a sense of the magnitude of the estimation errors made
-%	by the optimizer, consider template-18, which is one of the templates 
-%	that exhibit the biggest error in operator-level prediction with
-%	actual/estimate model building. Instances of template-18 include 
-%	the following group by clause on table lineitem:
-%	group by l_orderkey having sum(l_quantity) > 314
-%	There are 15 million distinct l_orderkey values in lineitem
-%	(out of approximately 60 million tuples). The estimated number of
-%	groups satisfying sum(l_quantity) > 314 is 399521, whereas
-%	the actual number is 84. The PostgreSQL query optimizer com-
-%	putes this estimate using histograms (with 100 bins) for each col-
-%	umn based on the attribute independence assumption. The results
-%	are later fed into a Hash-Semi-Join, whose cost estimate is correspondingly
-%	very much off the mark.
+	We've plotted the linear regression line resulting from fitting these points 
+	using linear least-squares regression 
+	(which can be seen as an error-minimizing mapping of the
+	optimizer-estimated cost (which is not measured in ms) to CPU-
+	time). As we can see, even for the mapping chosen to minimize
+	the overall error, there are significant differences between the estimated CPU cost 
+	and real CPU time for many queries. Similar
+	observations have been made in other works as well \cite{MSR,ICDE2012}
 
+	Note that while the final estimate made by the optimizer may not be an accurate reflection of
+	real execution time, the estimates provided at a finer level (i.e., plan level, operator level etc.) 
+	are quite useful. In the next section, we show how we can use optimizer's estimates at operator level 
+	and produce an estimate for overall execution time.
+		
+	\subsection{Operator level modeling}
+	PostgreSQL query optimizer provides the wide range of information at multiple levels. For example, 
+	for the Hash operator, it provides the following information.
+	
+	\begin{center}
+	\begin{tabular}{ |c|c| } 
+	 \hline
+		Node Type& Hash \\
+		Parent Relationship& Inner\\
+		Startup Cost& 4.45\\
+		Total Cost& 4.45\\
+		Plan Rows& 1\\
+		Plan Width& 117\\
+		Actual Startup Time& 0.017\\
+		Actual Total Time& 0.017\\
+		Actual Rows& 6\\
+		Actual Loops& 1\\
+		Hash Buckets& 1024\\
+		Hash Batches& 1\\
+		Original Hash Batches& 1\\
+		Peak Memory Usage& 1\\
+	 \hline
+	\end{tabular}
+	\end{center}
+	
+	While all of these attributes may not be candidates for features (i.e may not impact execution time),	some do. We can use the knowledge of SQL Query processing to select relevant features and determine the Best Fit Model as described earlier(Section 4.1). In this set of experiments, we are limiting
+	ourselves to the feature 'Actual Rows' (i.e, Input cardinalities). In the case of binary operator nodes (such as
+	Nested Loop), we are considering both left and right input cardinalities. Please note that 
+	a) the proposed feature set should not be considered complete as it may not capture all the properties that impact execution time, we shall review these set of features from time to time as we make progress in this work.  b) More number of features 	correspond to increased training time and since the computation of Best Fit Model is exponential to the number of features, we should select as few features as possible to make the computations tractable. 
+	
+	To ensure that the trained model is not over-fitting the data, we have generated training and testing queries do not contain identical instances of same query (i.e, Same query with same selectivities is not allowed). 
+	
+	\begin{center}
+	\begin{tabular}{ |c|c|c|c| } 
+	\hline
+	  Model & Minimum & Maximum & Mean\\ [0.5ex] 
+	 \hline
+	 Optimizer & 0.032  & 47.68 & 8.33 \\
+	 Our model & 0.003 & 2.61 & 0.53 \\
+	 \hline
+	\end{tabular}
+	\end{center}
+
+	\begin{figure*}[!t]
+	  \includegraphics[width=\textwidth]{tpch-1gbres.png}
+	  \caption{Operator-level modeling ,Errors by Template (1GB)}
+	\end{figure*}
+
+%	Give a background about Static and dynamic workload.  
+%	do experiments at 2 stages
+%	1. Act vs Act
+%	2. Est vs Est(Bias towards estimated cardinalities)
+%	For each type of above scenario, do testing for tpc-h queries 
+%	(tpc-ds in future)
+%	At different scales to see the model's ability to predict.
+%	For midterm you should be having result for 1 as well as 10 GB.
+%	For each above dataset, 
+%	Results should convey L1 (MRE) as well as queries that are within 
+%	[0-0.5] [0.5-1] [1-1.5] 
+
+	\section {Related work}
+		
+	
 	\section{Conclusions and Future Work}
-	Talk about generalization. 
-	operator specific features
-	capturing query interaction i.e., pipeline source of over-estimation
-	Optimizers provides sufficient information to detect a pipeline,
-	 can we use it to bind the operators and predict execution time 
-	 for a set of operators instead of a single operator.
+	In this work, we have presented learning based approach at a finer granularity than whats proposed earlier in the literature. By learning at operator level we have shown that the model can generalize to the queries which are unseen during the training because of the fundamental property that execution time is upper bounded by execution time of individual operators present in the plan tree. 
+	There remains a lot of work to be done. Currently feature set is limited, extending it will definitely improves accuracy and generality. However since the best-fit algorithm is exponential to number of features, it remains as a challenging work.
+%	We have assumed that we are getting true cardinalities, where in the practical scenario they will often have magnitude of errors. If we train the model with optimizers estimates instead of true cardinalities, the model to certain extent can have a bias towards estimation errors. On the other hand, we can have partial executions 
+	
+Also, interaction that happen within query makes accurate execution time prediction hard. For example, pipelining speeds up the query processing and is the primary source of over-estimation. Capturing these in the cost model is a challenging and has got the attention in recent years \cite{concurrent}. As mentioned earlier, we are not currently not addressing prediction in case of concurrent query execution. There is already some promising work in addressing this problem \cite{Ahmed,qshuffler}. It remains as an interesting future work to see how we can extend the features so that we can capture the execution time behavior under concurrent workloads.
 	
 	\begin{thebibliography}{9}
 	\bibitem{ganapathi} 
@@ -336,7 +372,20 @@ counting the numbers of pages read is not sufficient as the discrepancy between 
 	
 	\bibitem{robustIISc}
 	Harish, D., Pooja N. Darera, and Jayant R. Haritsa. "Identifying robust plans through plan diagram 			reduction." Proceedings of the VLDB Endowment 1.1 (2008): 1124-1140.
+	
+	\bibitem{concurrent}
+	Wu, Wentao, et al. "Towards predicting query execution time for concurrent and dynamic database 			workloads." Proceedings of the VLDB Endowment 6.10 (2013): 925-936.
+	
+	\bibitem{Ahmed}
+	Ahmad, Mumtaz, et al. "Modeling and exploiting query interactions in database systems." Proceedings of the 17th ACM conference on Information and knowledge management. ACM, 2008.
+	
+	\bibitem{qshuffler}
+	Ahmad, Mumtaz, et al. "Qshuffler: Getting the query mix right." Data Engineering, 2008. ICDE 2008. IEEE 24th International Conference on. IEEE, 2008.
 
+	
+	\bibitem{forecasting}
+	Makridakis, Spyros, Steven C. Wheelwright, and Rob J. Hyndman. Forecasting methods and applications. John Wiley, 2008.
+	
 	\bibitem{TPCH}
 	TPC-H benchmark specification, http://www.tpc.org/tpch/
 	
@@ -345,7 +394,10 @@ counting the numbers of pages read is not sufficient as the discrepancy between 
 	06: Proceedings of the 32nd international conference on Very
 	large data bases. VLDB Endowment, 2006, pp. 1049Ð1058
 	
-		\bibitem{opthet} 
+	\bibitem{sckit}
+	Scikit-learn: Machine Learning in Python, Pedregosa et al., JMLR 12, pp. 2825-2830, 2011.
+	
+	\bibitem{opthet} 
 	Du, Weimin, Ravi Krishnamurthy, and Ming-Chien Shan. "Query optimization in a heterogeneous dbms." 		VLDB. Vol. 92. 1992.
 	\bibitem{activeSLA}
 	Xiong, Pengcheng, et al. "ActiveSLA: a profit-oriented admission control framework for database-as-a-		service providers." Proceedings of the 2nd ACM Symposium on Cloud Computing. ACM, 2011.	
