@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.9.25)  24 OCT 2015 17:17
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.9.25)  25 OCT 2015 18:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -281,10 +281,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 223--226
 <optcost.png, id=33, 586.8324pt x 442.2924pt>
 File: optcost.png Graphic file (type png)
  <use optcost.png>
-Package pdftex.def Info: optcost.png used on input line 271.
+Package pdftex.def Info: optcost.png used on input line 269.
 (pdftex.def)             Requested size: 264.07213pt x 199.02974pt.
 
-Overfull \hbox (30.35402pt too wide) in paragraph at lines 267--272
+Overfull \hbox (30.35402pt too wide) in paragraph at lines 265--270
 [] 
  []
 
@@ -296,14 +296,14 @@ Package pdftex.def Info: tpch-1gbres.png used on input line 331.
 (pdftex.def)             Requested size: 491.43622pt x 286.43246pt.
 
 [5 <./optcost.png>] [6 <./tpch-1gbres.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 390--391
+Underfull \hbox (badness 10000) in paragraph at lines 418--419
 []\OT1/cmr/m/n/10 TPC-H bench-mark spec-i-fi-ca-tion,
  []
 
 Missing character: There is no √ in font cmr10!
 Missing character: There is no ê in font cmr10!
 
-Underfull \hbox (badness 8189) in paragraph at lines 403--404
+Underfull \hbox (badness 8189) in paragraph at lines 431--432
 []\OT1/cmr/m/n/10 Xiong, Pengcheng, et al. "Ac-tiveSLA: a
  []
 
@@ -313,13 +313,13 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 1960 strings out of 495032
- 24801 string characters out of 6181718
- 88483 words of memory out of 5000000
- 5169 multiletter control sequences out of 15000+600000
+ 1961 strings out of 495032
+ 24813 string characters out of 6181718
+ 101814 words of memory out of 5000000
+ 5170 multiletter control sequences out of 15000+600000
  10144 words of font info for 37 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 27i,6n,21p,681b,337s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 27i,6n,21p,1122b,331s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texli
@@ -333,7 +333,7 @@ s/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
 9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/
 share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on build/draft.pdf (7 pages, 466248 bytes).
+Output written on build/draft.pdf (7 pages, 471997 bytes).
 PDF statistics:
  98 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

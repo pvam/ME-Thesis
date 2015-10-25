@@ -24,7 +24,7 @@
 \textwidth 6.8in
 
 \title{\large \bf Predicting Query Execution Time }
-\author{Name}
+\author{Vamshi Pasunuru}
 
 \date{}
 
@@ -256,8 +256,6 @@ counting the numbers of pages read is not sufficient as the discrepancy between 
 	\item Statistical Models: As of now, we have limited our experiments to at-most 2 features (Input 			cardinalities $N_{l} , N_{r}$). For evaluating the best-fit model we have used linear regression 			models (available from python's sckit-learn \cite{sckit})
 	
 	TODO : 
-	1. Histogram of TPC-H errors.
-	2. table with distribution of MRE.
 	3. Performance operator wise. Box plot
 	4. Insights : which operators are hard to predict
 	
@@ -326,7 +324,9 @@ counting the numbers of pages read is not sufficient as the discrepancy between 
 	 \hline
 	\end{tabular}
 	\end{center}
-
+	
+	The benefits of modeling 
+	
 	\begin{figure*}[!t]
 	  \includegraphics[width=\textwidth]{tpch-1gbres.png}
 	  \caption{Operator-level modeling ,Errors by Template (1GB)}
@@ -345,14 +345,35 @@ counting the numbers of pages read is not sufficient as the discrepancy between 
 %	[0-0.5] [0.5-1] [1-1.5] 
 
 	\section {Related work}
-		
+	Query-plan-level predictions have recently been studied \cite{ganapathi}. In \cite{ganapathi},
+	authors consider plan-level query performance prediction for the
+	following \textit{static} query workloads: the TPC-DS query benchmark
+	and a query workload obtained from a customer database. They
+	report that they can predict individual query execution times within
+	20\% of the actual time for 85\% of their test queries.	However their approach produces
+	poor estimates for queries which are \textit{different} from training queries. The ability to 
+	adapt to dynamic workload is crucial for the cost model to continuously adapt the changes in the
+	underlying databases and queries.
+	
+	In \cite{ICDE2012, MSR} author's proposed an approach which learns at a finer granularity than 
+	at plan level. They use statistical models such as SVM and Linear regression to learn the behavior of 
+	every operator. They have shown by that learning at this level, the model can now recognize queries 		which can differ largely from the queries seen during training. They have only considered 14 out of 		22 templates and claimed that they were able to obtain 41\% i.e., an MRE of 0.41. We are different 			from their approach in 2 ways a) we consider learning at \textit{implementation level} i.e, for the operator \textit{sort}, to implement it optimizer has a choice among multiple sorting methods such as quick sort ,merge sort top-N heapsort and external sort etc. No previous approach distinguishes the implementation methods of an operator which is clearly incorrect because there's a substantial difference between resource consumptions of quick-sort and external sort as the former is CPU intensive (consumes relatively less time) and while the latter is IO intensive (consumes much more time). b) we consider multiple learning models for every implementation and select the one which fits the best. This approach is often used when the relation between features and target is unclear. 
+	
+	In \cite{analytical}, author's have done an analytical cost modeling where in they compute CPU and IO time individually by obtaining the number of operations performed and number of pages(sequential \& random) accessed respectively. They have also proposed a calibration phase where the cost model can account for the hardware changes which is absent in default Postgres model.  In previous unpublished work by Phankuri, they have devised methods to compute random page cost which was left out in the work\cite{analytical}. While this kind of approach seems natural, there's inherent ambiguity in knowing the number of pages accessed.  Even after knowing all this, there's no certain way we can compute IO time as cost model can never know whether a page is sequentially accessed or randomly accessed which impacts final cost computed heavily as there is a magnitude of difference in access times of sequential and random pages.
+	Finally, there has also been work on query progress indicators \cite{progress}. Query progress indicators provide estimations for the comple-
+	tion degrees of running queries. Such studies assume that the work
+	done by individual query operators are transparent, i.e., externally
+	visible. While these studies are also related to query execution performance,
+	they do not provide predictions for the execution time of
+	queries.
 	
 	\section{Conclusions and Future Work}
 	In this work, we have presented learning based approach at a finer granularity than whats proposed earlier in the literature. By learning at operator level we have shown that the model can generalize to the queries which are unseen during the training because of the fundamental property that execution time is upper bounded by execution time of individual operators present in the plan tree. 
 	There remains a lot of work to be done. Currently feature set is limited, extending it will definitely improves accuracy and generality. However since the best-fit algorithm is exponential to number of features, it remains as a challenging work.
+	
 %	We have assumed that we are getting true cardinalities, where in the practical scenario they will often have magnitude of errors. If we train the model with optimizers estimates instead of true cardinalities, the model to certain extent can have a bias towards estimation errors. On the other hand, we can have partial executions 
 	
-Also, interaction that happen within query makes accurate execution time prediction hard. For example, pipelining speeds up the query processing and is the primary source of over-estimation. Capturing these in the cost model is a challenging and has got the attention in recent years \cite{concurrent}. As mentioned earlier, we are not currently not addressing prediction in case of concurrent query execution. There is already some promising work in addressing this problem \cite{Ahmed,qshuffler}. It remains as an interesting future work to see how we can extend the features so that we can capture the execution time behavior under concurrent workloads.
+	Also, interaction that happen within query makes accurate execution time prediction hard. For example, pipelining speeds up the query processing and is the primary source of over-estimation. Capturing these in the cost model is a challenging and has got the attention in recent years \cite{concurrent}. As mentioned earlier, we are not currently not addressing prediction in case of concurrent query execution. There is already some promising work in addressing this problem \cite{Ahmed,qshuffler}. It remains as an interesting future work to see how we can extend the features so that we can capture the execution time behavior under concurrent workloads.
 	
 	\begin{thebibliography}{9}
 	\bibitem{ganapathi} 
@@ -378,10 +399,17 @@ Also, interaction that happen within query makes accurate execution time predict
 	
 	\bibitem{Ahmed}
 	Ahmad, Mumtaz, et al. "Modeling and exploiting query interactions in database systems." Proceedings of the 17th ACM conference on Information and knowledge management. ACM, 2008.
+	\bibitem{analytical}
+	Wu, Wentao, et al. "Predicting query execution time: Are optimizer cost models really unusable?." Data Engineering (ICDE), 2013 IEEE 29th International Conference on. IEEE, 2013.
 	
-	\bibitem{qshuffler}
-	Ahmad, Mumtaz, et al. "Qshuffler: Getting the query mix right." Data Engineering, 2008. ICDE 2008. IEEE 24th International Conference on. IEEE, 2008.
+	\bibitem{progress}
+	Chaudhuri, S., Narasayya, V., and Ramamurthy, R.
+	Estimating progress of execution for SQL queries. In
+	Proceedings of the 2004 ACM SIGMOD international
+	Conference on Management of Data
 
+	\bibitem{qshuffler}
+	Ahmad, Mumtaz, et al. "Qshuffler: Getting the query mix right." Data Engineering, 2008. ICDE 2008. IEEE 24th International Conference on. IEEE, 2008.	
 	
 	\bibitem{forecasting}
 	Makridakis, Spyros, Steven C. Wheelwright, and Rob J. Hyndman. Forecasting methods and applications. John Wiley, 2008.
@@ -401,8 +429,6 @@ Also, interaction that happen within query makes accurate execution time predict
 	Du, Weimin, Ravi Krishnamurthy, and Ming-Chien Shan. "Query optimization in a heterogeneous dbms." 		VLDB. Vol. 92. 1992.
 	\bibitem{activeSLA}
 	Xiong, Pengcheng, et al. "ActiveSLA: a profit-oriented admission control framework for database-as-a-		service providers." Proceedings of the 2nd ACM Symposium on Cloud Computing. ACM, 2011.	
-	\bibitem{progress}
-	Mishra, Chaitanya, and Nick Koudas. "The design of a query monitoring system." ACM Transactions on 		Database Systems (TODS) 34.1 (2009): 1.
 	
 	\end{thebibliography}
 	\end{multicols}
