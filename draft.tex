@@ -82,7 +82,7 @@ In this work, we propose and evaluate predictive modeling techniques that learn 
 	Estimates of Optimizer vs Actual execution time by running TPC-H queries on 1GB in-memory Postgres 		
 	database.
 	
-	In this work, we utilize learning based models and prediction techniques which are promising reasonable accuracies in recent work \cite{ganapathi,MSR,ICDE2012}
+	In this work, we utilize learning based models and prediction techniques which are promising reasonable accuracies in recent work \cite{ICDE2012,MSR,ganapathi}
 	
 	\section{Background : Model Based Prediction}	
 	We use the term model to refer to any predictive function such as
@@ -122,7 +122,7 @@ In this work, we propose and evaluate predictive modeling techniques that learn 
 knowledge of SQL Query processing. For the purpose of determining the best fit curve for the given set of features we consider building multiple models of different types. In each one of the models we use a single type of prediction model, either Linear Regression or SVMs, that performs well.
 
 	Hypothesis testing and confidence interval estimations are two common
-techniques for determining predictive accuracy \cite{forecasting}. As mentioned, 
+techniques for determining predictive accuracy. As mentioned, 
 it is not possible to estimate a priori what model would be
 most predictive for a given data set without training/testing it. In this work, we are using
 disjoint training and testing datasets that are generated from \textit{qgen} tool of TPC-H workload 		\cite{TPCH}. For quantifying the quality of predictions, we are using the metric called \textit{mean relative error}(MRE).
